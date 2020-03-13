@@ -200,6 +200,9 @@
 						} );
 
 						block.classList.add( 'has-highlights' );
+						if (highlight.icon) {
+							block.classList.add( 'highlight-line-icon' );
+						}
 					}
 
 				} );
@@ -232,24 +235,29 @@
 				return highlights.split( RevealHighlight.HIGHLIGHT_LINE_DELIMITER ).map( function( highlight ) {
 
 					// Parse valid line numbers
-					if( /^[\d-]+$/.test( highlight ) ) {
+					if( /^[\d-]+I?$/.test( highlight ) ) {
 
+						var icon = highlight.endsWith('I');
 						highlight = highlight.split( RevealHighlight.HIGHLIGHT_LINE_RANGE_DELIMITER );
-
 						var lineStart = parseInt( highlight[0], 10 ),
 							lineEnd = parseInt( highlight[1], 10 );
-
+						if (icon) {
+							console.log('icon');
+						}
 						if( isNaN( lineEnd ) ) {
 							return {
-								start: lineStart
+								start: lineStart,
+								icon: icon
 							};
 						}
 						else {
 							return {
 								start: lineStart,
-								end: lineEnd
+								end: lineEnd,
+								icon: icon
 							};
 						}
+						
 
 					}
 					// If no line numbers are provided, no code will be highlighted
@@ -275,18 +283,19 @@
 
 				return highlights.map( function( highlight ) {
 
+					var value = '';
 					// Line range
 					if( typeof highlight.end === 'number' ) {
-						return highlight.start + RevealHighlight.HIGHLIGHT_LINE_RANGE_DELIMITER + highlight.end;
+						value += highlight.start + RevealHighlight.HIGHLIGHT_LINE_RANGE_DELIMITER + highlight.end;
 					}
 					// Single line
 					else if( typeof highlight.start === 'number' ) {
-						return highlight.start;
+						value += highlight.start;
 					}
-					// All lines
-					else {
-						return '';
+					if (highlight.icon) {
+						value += 'I';
 					}
+					return value;
 
 				} ).join( RevealHighlight.HIGHLIGHT_LINE_DELIMITER );
 
