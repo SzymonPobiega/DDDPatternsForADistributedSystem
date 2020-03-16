@@ -200,11 +200,14 @@
 				<section>
 					<img src="images/async-3-1.png" class="stretch"/>
 				</section>
-				<section>
+				<section data-transition="slide-in none-out">
 					<img src="images/async-4.png" class="stretch"/>
 				</section>
-				<section>
+				<section data-transition="none-in slide-out">
 					<img src="images/async-5.png" class="stretch"/>
+				</section>
+				<section>
+					<img src="images/async-5-0-5.png" class="stretch"/>
 				</section>
 				<section>
 					<img src="images/async-5-1.png" class="stretch"/>
@@ -225,6 +228,9 @@
 					<img src="images/sync-3.png" class="stretch"/>
 				</section>
 				<section>
+					<img src="images/sync-3-0-5.png" class="stretch"/>
+				</section>
+				<section>
 					<img src="images/sync-3-1.png" class="stretch"/>
 				</section>
 				<section>
@@ -233,10 +239,10 @@
 				<section>
 					<img src="images/sync-async-0-1.png" class="stretch"/>
 				</section>
-				<section>
+				<section data-transition="slide-in none-out">
 					<img src="images/sync-async-1.png" class="stretch"/>
 				</section>
-				<section>
+				<section data-transition="none-in slide-out">
 					<img src="images/sync-async-2.png" class="stretch"/>
 				</section>
 				<section>
@@ -269,6 +275,12 @@ public async Task&lt;ActionResult&gt;
 				</section>
 				<section>
 					<h2>Prepare shipment and bill customer</h2>
+				</section>
+				<section>
+					<img src="images/ddd-book.jpg" class="stretch"/>
+				</section>
+				<section>
+					<h2>Aggregates and entities encapsulate behavior and data</h2>
 				</section>
 				<section>
 					<img src="images/rarity.png" class="stretch"/>
@@ -314,17 +326,15 @@ public class ConfirmPaymentHandler
 				</section>
 				<section>
 					<h3>
-					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="2|4-5|9-10">
+					<pre class="stretch"><code class="csharp" data-noescape data-trim>
 var order = _repo.Find(msg.OrderId);
 if (order.ConfirmPayment())
 {
-	context.Publish(
-		new PrepareShipment());
+	context.Publish(new PrepareShipment());
 }
 else
 { 
-	context.Publish(
-		new CancelShipment());
+	context.Publish(new CancelShipment());
 }
 					</code></pre>
 					</h3>
@@ -399,7 +409,7 @@ public class Shipment
 				</section>
 				<section>
 					<h3>
-					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="1|2|4|5|7-8|10|11|12|12I|1|2|7-8|10|11|12|13|13I|1|2|7-8|13">
+					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="1|2|4|5|7-8|10|11|12|12I|5|1|2|7-8|10|11|12|13|13I|12|1|2|7-8|13">
 var entity = LoadOrCreate(entityId);
 if (!entity.Outbox.Contains(messageId))
 {
@@ -424,6 +434,45 @@ if (toSend != null)
 				</section>
 				<section>
 					<h3>
+					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="1-2|8|9|10-11|1-2|4">
+var invoiceExists = Find(invoiceId);
+if (invoiceExists)
+{
+	log.Info("Duplicate");
+}
+else
+{
+	var invoice = Generate(invoiceId);
+	await Store(invoiceId, invoice);
+	await context.Reply(
+		new InvoiceGenerated());
+}
+					</code></pre>
+					</h3>
+				</section>
+				<section>
+					<h3>
+					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="1-2|8|9|10-11|10-11I|1-2|4">
+var invoiceExists = Find(invoiceId);
+if (invoiceExists)
+{
+	log.Info("Duplicate");
+}
+else
+{
+	var invoice = Generate(invoiceId);
+	await Store(invoiceId, invoice);
+	await context.Reply(
+		new InvoiceGenerated());<span class="line-icon">🔥🔥🔥</span>
+}
+					</code></pre>
+					</h3>
+				</section>
+				<section>
+					<img src="images/flutter-shy-failed-publish.png" class="stretch"/>
+				</section>
+				<section>
+					<h3>
 					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="1-2|8|9|11-12|1-2|4|11-12">
 var invoiceExists = Find(invoiceId);
 if (invoiceExists)
@@ -442,6 +491,9 @@ await context.Reply(
 				</section>
 				<section>
 					<img src="images/rainbow-outbox-critique.png" class="stretch"/>
+				</section>
+				<section>
+					<img src="images/shipit.jpg" class="stretch"/>
 				</section>
 				<section>
 					<h3>
@@ -469,8 +521,11 @@ if (order.Items.Count<span class="outbox-count-1 line-annotation">/*=1*/</span><
 				</section>
 				<section>
 					<h2>Message sink</h2>
-					<h3 class="fragment">Relies on natural idempotence of operations</h3>
+					<h3 class="fragment">Relies on natural idempotence</h3>
 					<h3 class="fragment">Outgoing messages derived from incoming message</h3>
+				</section>
+				<section>
+					<img src="images/architects.png" class="stretch"/>
 				</section>
 				<section>
 					<img src="images/layers.png" class="stretch"/>
