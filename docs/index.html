@@ -4,8 +4,8 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>Tactical Domain-Driven Design patterns for a distributed system</title>
-		<meta name="description" content="Tactical Domain-Driven Design patterns for a distributed system">
+		<title>Domain-Driven Design patterns for a distributed system</title>
+		<meta name="description" content="Domain-Driven Design patterns for a distributed system">
 		<meta name="author" content="Szymon Pobiega">
 
 		<meta name="apple-mobile-web-app-capable" content="yes">
@@ -119,6 +119,14 @@
 				left: 20px;
 				bottom: 20px;
 			}
+
+			.credits {
+				position: fixed;
+				height: 40px;
+				z-index: 30;
+				right: 20px;
+				top: 20px;
+			}
 			span.line-icon {
 				display: none;
 			}
@@ -152,35 +160,36 @@
 
 	<body>
 		<div class="reveal">
-			<aside class="particular-logo">
+			<aside class="particular-logo" id="particular-logo">
 				<img src="images/Particular.svg" height="100em"/>
 			</aside>
 			<div class="slides">
 				<section>
-					<h2>Tactical Domain-Driven Design patterns for a distributed system</h2>
+					<h2>Domain-Driven Design patterns for a distributed system</h2>
 					<p><a href="https://exactly-once.github.io/">exactly-once.github.io</a></p>
 					<p><a href="https://twitter.com/SzymonPobiega">twitter.com/SzymonPobiega</a></p>
 					<p><a href="https://www.linkedin.com/in/szymonpobiega/">linkedin.com/in/SzymonPobiega</a></p>
 				</section>
+				<!-- <section>
+					<h2 class="fragment highlight-current-blue">Domain-Driven Design</h2>
+					<h2 class="fragment highlight-current-blue">patterns</h2>
+					<h2 class="fragment highlight-current-blue">for a distributed system</h2>
+				</section> -->
 				<section>
 					<h2>Domain-Driven Design</h2>
 					<h2>Event Sourcing</h2>
 					<img src="images/Particular.svg" height="100em"/>
 				</section>
 				<section>
-					<h2>Pierogi</h2>
-					<figure>
-						<img src="images/pierogi.jpg" alt="" class="stretch"/>
-						<figcaption>
-							<small>Autor: Stako (File:Ruskie.jpg) [<a href="http://www.gnu.org/copyleft/fdl.html">GFDL</a> lub <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA-3.0</a>], <a href="https://commons.wikimedia.org/wiki/File:Pierogi_z_cebulk%C4%85.jpg">Wikimedia Commons</a></small>
-						</figcaption>
-					</figure>
-				</section>
-				<section>
 					<img src="images/architect.jpg" class="stretch"/>
 				</section>
 				<section>
-					<img src="images/architects.png" class="stretch"/>
+					<figure>
+						<img src="images/architects.png"/>
+						<figcaption>
+							<small>Pony images by <a href="https://www.deviantart.com/andoanimalia">AndroAnimalia</a></small>
+						</figcaption>
+					</figure>
 				</section>
 				<section>
 					<h1>Shopping cart</h1>
@@ -189,15 +198,22 @@
 					<img src="images/pinkie pie.png" class="stretch"/>
 				</section>
 				<section>
+					<img src="images/sync-1.png" class="stretch"/>
+				</section>
+				<!-- More and more ponies wanted to puy the magic potions and the system could not cope with peak load around major holidays -->
+				<section>
 					<img src="images/async-1.png" class="stretch"/>
 				</section>
+				<!-- Users stated complaining that they click a button and it takes ages until they see their shopping cart updated -->
 				<section>
 					<img src="images/async-2.png" class="stretch"/>
 				</section>
-				<section>
-					<img src="images/async-3.png" class="stretch"/>
-				</section>
-				<section>
+				<!-- Adding web sockets solve the problem but now a pony could click multiple things at the same time and 
+					users were lost what happened. They frequently added one item multiple times and then removed it.
+					Adding a simple local storage was supposed to help
+				 -->
+				<!-- As flutter shy noticed, the web server didn't add any value so ponies agreed to remove it and replace with simple reverse proxy -->
+				<!-- <section>
 					<img src="images/async-3-1.png" class="stretch"/>
 				</section>
 				<section data-transition="slide-in none-out">
@@ -205,28 +221,41 @@
 				</section>
 				<section data-transition="none-in slide-out">
 					<img src="images/async-5.png" class="stretch"/>
-				</section>
-				<section>
-					<img src="images/async-5-0-5.png" class="stretch"/>
-				</section>
-				<section>
-					<img src="images/async-5-1.png" class="stretch"/>
-				</section>
-				<section>
-					<img src="images/async-6.png" class="stretch"/>
-				</section>
+				</section> -->
+				<!-- So they ended up in a situation almost exactly like the one at the beginning but
+					- system was still slow (but UI was quick to react and show queued commands)
+					- users had to wait ages during peak periods
+					- the local storage only made thing more complex
+				-->
 				<section>
 					<img src="images/flutter shy.png" class="stretch"/>
 				</section>
 				<section>
+					<h2>When queues help?</h2>
+					<h3 class="fragment">Higher-than-capacity load for short periods of time (bursts)</h3>
+					<h3 class="fragment">Further action does not depend on the outcome</h3>
+				</section>
+				<!-- <section>
+					<img src="images/async-3.png" class="stretch"/>
+				</section> -->
+				<!-- Use serverless to scale out the web frontend. Use sharding on the back end. -->
+				<section>
 					<img src="images/sync-1.png" class="stretch"/>
 				</section>
+				<!-- Until this point the orders in the back-end were processed using Twilight Sparkle magic. 
+					But she could not handle such a big load -> batch jobs -->
 				<section>
 					<img src="images/sync-2.png" class="stretch"/>
 				</section>
 				<section>
+					<img src="images/sync-2-5.png" class="stretch"/>
+				</section>
+				<section>
 					<img src="images/sync-3.png" class="stretch"/>
 				</section>
+				<!-- 
+					The batch job->http pattern became very popular in the code base as new services were created. It actually became the norm.
+				 -->
 				<section>
 					<img src="images/sync-3-0-5.png" class="stretch"/>
 				</section>
@@ -237,28 +266,21 @@
 					<img src="images/sync-4.png" class="stretch"/>
 				</section>
 				<section>
-					<img src="images/sync-async-0-1.png" class="stretch"/>
-				</section>
-				<section data-transition="slide-in none-out">
 					<img src="images/sync-async-1.png" class="stretch"/>
-				</section>
-				<section data-transition="none-in slide-out">
-					<img src="images/sync-async-2.png" class="stretch"/>
 				</section>
 				<section>
 					<h3>
-					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="5|6|8|9-11|12">
+					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="5|6|8|9|10|11">
 [HttpPost]
 public async Task&lt;ActionResult&gt; 
 	SubmitOrder(string orderId)
 {
-	var order = await _repo.Find(orderId);
+	var order = await repo.Find(orderId);
 	order.Submit();
 
 	var tran = await BeginTransaction();
-	await _repo.Save(order, tran);
-	await _messageSession.Publish(
-		new OrderSubmitted(), tran);
+	await repo.Save(order, tran);
+	await bus.Publish(new OrderSubmitted());
 	await tran.Commit();
 }
 					</code></pre>
@@ -268,11 +290,83 @@ public async Task&lt;ActionResult&gt;
 					<img src="images/update-and-send-rarity.png" class="stretch"/>
 				</section>
 				<section>
+					<h3>
+					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="">
+await bus.Publish(new OrderSubmitted());
+await tran.Commit();
+					</code></pre>
+					</h3>
+				</section>
+				<section>
+					<img src="images/table-queue.png" class="stretch"/>
+				</section>
+				<section>
+					<h3>
+					<pre class="stretch"><code class="sql" data-noescape data-trim data-line-numbers="2|6|4|5|7">
+with msg as (
+	select top (1) * from Msg 
+		with (
+			updlock, 
+			readpast) 
+		order by Seq
+) delete from msg output Payload
+					</code></pre>
+					</h3>
+				</section>
+				<section>
+					<h3>
+					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="5|6|8|9|10-11|9-12">
+[HttpPost]
+public async Task&lt;ActionResult&gt; 
+	SubmitOrder(string orderId)
+{
+	var order = await repo.Find(orderId);
+	order.Submit();
+
+	var tran = await BeginTransaction();
+	await repo.Save(order, tran);
+	await bus.Publish(
+		new OrderSubmitted(), tran);
+	await tran.Commit();
+}
+					</code></pre>
+					</h3>
+				</section>
+				<section>
+					<img src="images/ranbow-poor-pony-queue-2.png" class="stretch"/>
+				</section>
+				<section>
+					<h3 class="fragment">8 vCore SQL Azure</h3>
+					<h3 class="fragment">$2 per hour</h3>
+					<h3 class="fragment">800 messages/s</h3>
+					<h3 class="fragment">2 880 000 messages/h</h3>
+					<h3 class="fragment">$0.0007 per 1000 messages</h3>
+					<h3 class="fragment">Storage Queues: $0.0012 per 1000 messages</h3>
+				</section>
+				<section>
+					<h2>Polyglot messaging</h2>
+				</section>
+				<section>
 					<img src="images/router.png" class="stretch"/>
 				</section>
 				<section>
-					<img src="images/router-options.png" class="stretch"/>
+					<img src="images/sync-async-1.png" class="stretch"/>
 				</section>
+				<section>
+					<img src="images/sync-async-0-1.png" class="stretch"/>
+				</section>
+				<section data-transition="slide-in none-out">
+					<img src="images/sync-async-1.png" class="stretch"/>
+				</section>
+				<!-- 
+					Sync shell, async core
+					-->
+				<section data-transition="none-in slide-out">
+					<img src="images/sync-async-2.png" class="stretch"/>
+				</section>
+				<!-- <section>
+					<img src="images/router-options.png" class="stretch"/>
+				</section> -->
 				<section>
 					<h2>Prepare shipment and bill customer</h2>
 				</section>
@@ -286,55 +380,94 @@ public async Task&lt;ActionResult&gt;
 					<img src="images/rarity.png" class="stretch"/>
 				</section>
 				<section>
+					<h3>
+					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="3|4|5">
+public async Task Confirm(string orderId)
+{
+	var order = await repo.Find(orderId);
+	order.ConfirmPayment();
+	repo.Save(order);
+}
+					</code></pre>
+					</h3>
+				</section>
+				<section>
+					<h2>Distributed business process</h2>
+				</section>
+				<section>
 					<img src="images/distributed-business-process.png" class="stretch"/>
 				</section>
 				<section>
 					<img src="images/distributed-business-process-2.png" class="stretch"/>
 				</section>
 				<section>
-					<h2>Command</h2>
-					<h3>vs</h3>
-					<h2>Event</h2>
+					<img src="images/rainbow-use-events.png" class="stretch"/>
 				</section>
-				<section>
-					<img src="images/commands-1.png" class="stretch"/>
-				</section>
-				<section>
+				<!-- <section>
 					<img src="images/commands-2.png" class="stretch"/>
-				</section>
+				</section> -->
 				<section>
 					<h3>
-					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="1-2|4-5|7|8|10-11">
+					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="1-2|4-5|7|10|11-12|8-9">
 public class ConfirmPaymentHandler 
-	: IHandleMessages&lt;ConfirmPayment&gt;
+	: IHandleMessages&lt;OrderAccepted&gt;
 {
-	public Task Handle(ConfirmPayment msg, 
+	public Task Handle(OrderAccepted msg, 
 		IMessageHandlingContext context)
 	{
-		var order = _repo.Find(msg.OrderId);
+		var order = repo.Find(msg.OrderId);
+		//When an order is accepted, 
+		//confirm payment
 		order.ConfirmPayment();
-
 		context.Publish(
-			new PrepareShipment());
+			new OrderConfirmed());
 	}
 }
 					</code></pre>
 					</h3>
 				</section>
 				<section>
+					<img src="images/pinkie-use-commands.png" class="stretch"/>
+				</section>
+				<section>
+					<h3>
+					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="1-2|4-5|7|8|11-12|9-10">
+public class ConfirmPaymentHandler 
+	: IHandleMessages&lt;ConfirmPayment&gt;
+{
+	public Task Handle(ConfirmPayment msg, 
+		IMessageHandlingContext context)
+	{
+		var order = repo.Find(msg.OrderId);
+		order.ConfirmPayment();
+		//When a payment is confirmed, 
+		//schedule shipment
+		context.Send(
+			new ScheduleShipment());
+	}
+}
+					</code></pre>
+					</h3>
+				</section>
+				<section>
+					<h2>Process logic implicit in the message handler code</h3>
+					<h3 class="fragment">Events only? Commands only? Mixed?</h3>
+				</section>
+				<section>
 					<img src="images/app-service-what-message.png" class="stretch"/>
 				</section>
 				<section>
 					<h3>
-					<pre class="stretch"><code class="csharp" data-noescape data-trim>
-var order = _repo.Find(msg.OrderId);
-if (order.ConfirmPayment())
+					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="">
+var order = repo.Find(msg.OrderId);
+order.ConfirmPayment();
+if (order.Confirmed)
 {
-	context.Publish(new PrepareShipment());
+	context.Send(new PrepareShipment());
 }
 else
 { 
-	context.Publish(new CancelShipment());
+	context.Send(new CancelShipment());
 }
 					</code></pre>
 					</h3>
@@ -343,16 +476,68 @@ else
 					<img src="images/rarity-tight-coupling.png" class="stretch"/>
 				</section>
 				<section>
-					<img src="images/pat-helland.png" class="stretch"/>
+					<figure>
+						<img src="images/pinkie-domain-events.png"/>
+						<figcaption>
+							<small><a href="http://udidahan.com/2008/08/25/domain-events-take-2/">udidahan.com/2008/08/25/domain-events-take-2/</a></small>
+						</figcaption>
+					</figure>
 				</section>
 				<section>
-					<img src="images/entities-aggregates.png" class="stretch"/>
+					<h3>
+					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="1|2|3-5|6-8|10">
+var order = repo.Find(msg.OrderId);
+var e = new Events();
+e.Subscribe&lt;PaymentConfirmed&gt;(
+	_ => ctx.Send(new PrepareShipment());
+)
+e.Subscribe&lt;PaymentRefused&gt;(
+	_ => ctx.Send(new CancelShipment());
+)
+
+order.ConfirmPayment(e);
+					</code></pre>
+					</h3>
+				</section>
+				<section>
+					<h3>
+					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="4|6|14">
+public void ConfirmPayment(Events e)
+{ 
+	//...
+	if (success)
+	{
+		e.Publish(new PaymentConfirmed());
+	}
+	else
+	{ 
+		e.Publish(new PaymentRefused());
+	}
+}
+//Callbacks registered by the handler
+ctx.Send(new PrepareShipment());
+ctx.Send(new CancelShipment());
+					</code></pre>
+					</h3>
+				</section>
+				<section>
+					<img src="images/twilight-better-idea.png" class="stretch"/>
+				</section>
+				<section>
+					<img src="images/entities-aggregates-1.png" class="stretch"/>
+					<img class="fragment" src="images/entities-aggregates-2.png" class="stretch"/>
+				</section>
+				<section>
+					<img src="images/twilight-thanks-pat.png" class="stretch"/>
+				</section>
+				<section>
+					<h2>Messages Are Addressed to Entities</h2>
 				</section>
 				<section>
 					<h3>
 					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="1|2|7-8|10">
-public class Payment
-	: IHandleMessages&lt;ConfirmPayment&gt;
+public class Payment : Aggregate,
+	IHandleMessages&lt;ConfirmPayment&gt;
 {
 	public Task Handle(ConfirmPayment msg, 
 		IMessageHandlingContext ctx)
@@ -368,9 +553,9 @@ public class Payment
 				</section>
 				<section>
 					<h3>
-					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="1|2|8|10">
-public class OrderProcess
-	: IHandleMessages&lt;PaymentConfirmed&gt;
+					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="1|2|8|10|12">
+public class OrderProcess : Saga,
+	IHandleMessages&lt;PaymentConfirmed&gt;
 {
 	public Task Handle(
 		PaymentConfirmed msg, 
@@ -378,7 +563,10 @@ public class OrderProcess
 	{
 		this.PaymentConfirmed = true;
 
-		ctx.Send(new PrepareShipment());
+		if (AddressChecked)
+		{
+			ctx.Send(new PrepareShipment());
+		}
 	}
 }
 					</code></pre>
@@ -387,8 +575,8 @@ public class OrderProcess
 				<section>
 					<h3>
 					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="1|2|7|9">
-public class Shipment 
-	: IHandleMessages&lt;PrepareShipment&gt;
+public class Shipment : Aggregate,
+	IHandleMessages&lt;PrepareShipment&gt;
 {
 	public Task Handle(PrepareShipment msg, 
 		IMessageHandlingContext ctx)
@@ -402,6 +590,9 @@ public class Shipment
 					</h3>
 				</section>
 				<section>
+					<h2>Message-driven state machines</h2>
+				</section>
+				<section>
 					<img src="images/flutter-shy-duplicate.png" class="stretch"/>
 				</section>
 				<section>
@@ -409,7 +600,29 @@ public class Shipment
 				</section>
 				<section>
 					<h3>
-					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="1|2|4|5|7-8|10|11|12|12I|5|1|2|7-8|10|11|12|13|13I|12|1|2|7-8|13">
+					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="1|2|4|5|6|7|9|11|12|12I|7|1|2|9|11|12|13|13I|1|2|9|13">
+var record = TryLoadOutbox(messageId);
+if (record == null)
+{ 
+	var transaction = BeginTransaction();
+	record = ProcessMessage(transaction);
+	Store(record, transaction);
+	transition.Commit();
+}
+if (!record.Dispatched)
+{ 
+	Dispatch(record.Messages);
+	MarkAsDispatched(record);<span class="line-icon">🔥🔥🔥</span>
+}<span class="line-icon">🔥🔥🔥</span>
+					</code></pre>
+					</h3>
+				</section>
+				<section>
+					<img src="images/rainbow-no-transactions.png" class="stretch"/>
+				</section>
+				<section>
+					<h3>
+					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="1|2|4|5|7-8|10|11|12|12I|5">
 var entity = LoadOrCreate(entityId);
 if (!entity.Outbox.Contains(messageId))
 {
@@ -427,125 +640,54 @@ if (toSend != null)
 					</h3>
 				</section>
 				<section>
-					<h2>Generate an invoice document</h2>
-				</section>
-				<section>
-					<img src="images/rainbow dash.png" class="stretch"/>
+					<img src="images/rainbow-some-transactions.png" class="stretch"/>
 				</section>
 				<section>
 					<h3>
-					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="1-2|8|9|10-11|1-2|4">
-var invoiceExists = Find(invoiceId);
-if (invoiceExists)
-{
-	log.Info("Duplicate");
-}
-else
-{
-	var invoice = Generate(invoiceId);
-	await Store(invoiceId, invoice);
-	await context.Reply(
-		new InvoiceGenerated());
+					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="1,3,7">
+var partitionId = DeriveFromMessage();
+var record = 
+	TryLoadOutbox(messageId, partitionId);
+if (record == null)
+{ 
+	var transaction 
+		= BeginTransaction(partitionId);
+	record = ProcessMessage(transaction);
+	Store(record);
+	transition.Commit();
 }
 					</code></pre>
 					</h3>
 				</section>
 				<section>
-					<h3>
-					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="1-2|8|9|10-11|10-11I|1-2|4">
-var invoiceExists = Find(invoiceId);
-if (invoiceExists)
-{
-	log.Info("Duplicate");
-}
-else
-{
-	var invoice = Generate(invoiceId);
-	await Store(invoiceId, invoice);
-	await context.Reply(
-		new InvoiceGenerated());<span class="line-icon">🔥🔥🔥</span>
-}
-					</code></pre>
-					</h3>
+					<img src="images/pinkie-new-products.png" class="stretch"/>
 				</section>
-				<section>
-					<img src="images/flutter-shy-failed-publish.png" class="stretch"/>
-				</section>
-				<section>
-					<h3>
-					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="1-2|8|9|11-12|1-2|4|11-12">
-var invoiceExists = Find(invoiceId);
-if (invoiceExists)
-{
-	log.Info("Duplicate");
-}
-else
-{
-	var invoice = Generate(invoiceId);
-	await Store(invoiceId, invoice);
-}
-await context.Reply(
-	new InvoiceGenerated());
-					</code></pre>
-					</h3>
-				</section>
-				<section>
-					<img src="images/rainbow-outbox-critique.png" class="stretch"/>
-				</section>
-				<section>
-					<img src="images/shipit.jpg" class="stretch"/>
-				</section>
-				<section>
-					<h3>
-					<pre class="stretch"><code class="csharp" data-noescape data-trim data-line-numbers="|1-2I|6|7|9|10-11|10-11I|1-2|6|7|9|12|1-2|3|9|12">
-var order = _repo.Find(orderId<span class="outbox-order-123 line-annotation">/*=123*/</span><span class="outbox-order-234 line-annotation">/*=234*/</span>);
-if (order.HasItem(message.Item)) {
-	log.Info("Duplicate");
-}
-else {
-	order.AddItem(message.Item);
-	await _repo.Store(order, invoice);
-}
-if (order.Items.Count<span class="outbox-count-1 line-annotation">/*=1*/</span><span class="outbox-count-2 line-annotation">/*=2*/</span> == 1) { 
-	await context.Publish(
-		new FirstItemAdded());<span class="line-icon">🔥🔥🔥</span>
-}
-					</code></pre>
-					</h3>
-				</section>
-				<section>
-					<img src="images/garbage.png" class="stretch"/>
-				</section>
-				<section>
-					<img src="images/twilight-side-effects.png" class="stretch"/>
-				</section>
-				<section>
-					<h2>Message sink</h2>
-					<h3 class="fragment">Relies on natural idempotence</h3>
-					<h3 class="fragment">Outgoing messages derived from incoming message</h3>
-				</section>
-				<section>
-					<img src="images/architects.png" class="stretch"/>
-				</section>
-				<section>
+				<section data-background-image="images/blueprint.jpg" data-logo="no-logo">
 					<img src="images/layers.png" class="stretch"/>
 				</section>
+				<section data-background-image="images/blueprint.jpg" data-logo="no-logo">
+					<img src="images/stripes-0.png" class="stretch"/>
+				</section>
 				<section>
-					<h2>Architecture</h2>
-					<h3 class="fragment">Message processing</h3>
-					<h3 class="fragment">Communication infrastructure</h3>
-					<h3 class="fragment">Problem space / Domain</h3>
-					<h3 class="fragment">Logical</h3>
-					<h3 class="fragment">Deployment</h3>
+					<img src="images/flutter-shy-messy.png" class="stretch"/>
+				</section>
+				<section data-background-image="images/blueprint.jpg" data-transition="slide-in none-out" data-logo="no-logo">
+					<img src="images/stripes.png" class="stretch"/>
+				</section>
+				<section data-background-image="images/blueprint.jpg" data-transition="none-in slide-out" data-logo="no-logo">
+					<img src="images/stripes-2.png" class="stretch"/>
 				</section>
 				<section>
 					<img src="images/blog.png" class="stretch"/>
 				</section>
 				<section>
-					<img src="images/micro-cph.png" class="stretch"/>
+					<img src="images/ndc-workshops.png" class="stretch"/>
+					<h3>Building reliable event-driven microservices</h3>
+					<h2><a href="http://ndcworkshops.com/slot/reliable-event-driven-microservices">March 11-12</a></h2>
 				</section>
 				<section>
 					<h1>Thank you!</h1>
+					<p><a href="https://ndcworkshops.com/slot/reliable-event-driven-microservices">NDC Workshops</a></p>
 					<p><a href="https://github.com/SzymonPobiega/NServiceBus.Router">github.com/SzymonPobiega/NServiceBus.Router</a></p>
 					<p><a href="https://github.com/exactly-once/">github.com/exactly-once</a></p>
 					<p><a href="https://exactly-once.github.io/">exactly-once.github.io</a></p>
@@ -587,7 +729,7 @@ if (order.Items.Count<span class="outbox-count-1 line-annotation">/*=1*/</span><
 			// Full list of configuration options available at:
 			// https://github.com/hakimel/reveal.js#configuration
 			Reveal.initialize({
-				controls: true,
+				controls: false,
 				progress: true,
 				history: true,
 				center: true,
@@ -648,6 +790,15 @@ if (order.Items.Count<span class="outbox-count-1 line-annotation">/*=1*/</span><
 				if (typeof prefix !== `undefined`) {
 					$img.attr('src', prefix+'-'+0+suffix)
 				}
+
+				var hasLogo = $slide.data('logo');
+				var $logo = $('#particular-logo');
+				if (hasLogo === 'no-logo') {
+					$logo.hide();
+				} else {
+					$logo.show();
+				}
+				
 			} );
 
 			// var header = $('#header').html();
